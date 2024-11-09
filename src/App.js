@@ -1,7 +1,7 @@
 
 function App() {
     return (
-        <div>Lecimy. Panowie</div>
+        <div>Lecimy. Panowie!</div>
     );
 
 }
