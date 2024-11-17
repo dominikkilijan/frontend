@@ -1,62 +1,73 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function FileUpload() {
-    const [uploadStatus, setUploadStatus] = useState('');
-    const [isDragging, setIsDragging] = useState(false);
+    const [file, setFile] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const handleFileUpload = (e) => {
-        e.preventDefault();
-        const file = e.target.fileInput.files[0];
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
 
-        if (file && file.type === 'application/pdf') {
-            setUploadStatus(`Plik ${file.name} został pomyślnie wybrany.`);
-        } else {
-            setUploadStatus('Proszę wybrać plik PDF.');
+    const handleUpload = async () => {
+        if (!file) {
+            alert('Wybierz plik PDF, który chcesz przesłać.');
+            return;
         }
-    };
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
+        setLoading(true);
 
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    };
+        const formData = new FormData();
+        formData.append('file', file);
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        const file = e.dataTransfer.files[0];
+        try {
+            const response = await axios.post('http://localhost:8080/process', formData, {
+                responseType: 'blob', // Oczekujemy odpowiedzi w formacie pliku
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log(response.headers);
 
-        if (file && file.type === 'application/pdf') {
-            setUploadStatus(`Plik ${file.name} został pomyślnie wybrany.`);
-        } else {
-            setUploadStatus('Proszę wybrać plik PDF.');
+
+            // Wyciąganie nazwy pliku z nagłówka `Content-Disposition`
+            const contentDisposition = response.headers['content-disposition'];
+            let filename = 'converted.mxl'; // Domyślna nazwa
+
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                if (filenameMatch && filenameMatch[1]) {
+                    filename = filenameMatch[1];
+                }
+            }
+
+
+            // Odbierz plik MXL z odpowiedzi
+            const blob = new Blob([response.data], { type: 'application/vnd.recordare.musicxml+xml' });
+            const downloadUrl = URL.createObjectURL(blob);
+
+            // Utwórz link do pobrania
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = filename; // Użyj dynamicznej nazwy pliku
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+        } catch (error) {
+            alert('Wystąpił problem podczas przesyłania pliku: ' + error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div style={containerStyle}>
-            <h2 style={headerStyle}>Dodaj plik PDF</h2>
-            <div
-                style={{
-                    ...uploadBoxStyle,
-                    borderColor: isDragging ? '#66bb6a' : '#ccc'
-                }}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-            >
-                <form onSubmit={handleFileUpload}>
-                    <input type="file" id="fileInput" accept=".pdf" style={{ display: 'none' }} />
-                    <label htmlFor="fileInput" style={fileLabelStyle}>
-                        <span>WYBIERZ PLIK</span>
-                    </label>
-                </form>
-                <p>lub upuść pliki tutaj</p>
-                <div style={{ marginTop: '10px', color: '#66bb6a' }}>{uploadStatus}</div>
-            </div>
+            <h1>Prześlij plik PDF</h1>
+            <input type="file" accept="application/pdf" onChange={handleFileChange} style={inputStyle} />
+            <button onClick={handleUpload} disabled={loading} style={buttonStyle}>
+                {loading ? 'Przesyłanie...' : 'Prześlij'}
+            </button>
         </div>
     );
 }
@@ -65,40 +76,141 @@ const containerStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '100%'
-};
-
-const uploadBoxStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
-    width: '80%',
-    maxWidth: '600px',
-    padding: '40px',
-    borderRadius: '10px',
-    border: '2px dashed #ccc',
-    backgroundColor: '#f8f8f8',
-    color: '#666',
-    textAlign: 'center',
-    transition: 'border-color 0.3s',
-    cursor: 'pointer',
+    gap: '20px',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    width: '100%',
+    maxWidth: '400px',
+    margin: '0 auto',
 };
 
-const headerStyle = {
-    fontSize: '30px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
+const inputStyle = {
+    padding: '10px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    fontSize: '16px',
+    width: '100%',
+    maxWidth: '300px',
 };
 
-const fileLabelStyle = {
+const buttonStyle = {
     padding: '10px 20px',
-    backgroundColor: '#66bb6a',
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#28a745',
     color: '#fff',
-    borderRadius: '5px',
+    fontSize: '16px',
     cursor: 'pointer',
-    fontWeight: 'bold',
-    marginBottom: '10px',
+    width: '100%',
+    maxWidth: '150px',
+    textAlign: 'center',
+    transition: 'background-color 0.3s ease',
+    outline: 'none',
 };
 
 export default FileUpload;
+
+
+// import React, { useState } from 'react';
+// import axios from 'axios';
+//
+// function FileUpload() {
+//     const [file, setFile] = useState(null);
+//     const [loading, setLoading] = useState(false);
+//
+//     const handleFileChange = (event) => {
+//         setFile(event.target.files[0]);
+//     };
+//
+//     const handleUpload = async () => {
+//         if (!file) {
+//             alert('Wybierz plik PDF, który chcesz przesłać.');
+//             return;
+//         }
+//
+//         setLoading(true);
+//
+//         const formData = new FormData();
+//         formData.append('file', file);
+//
+//         try {
+//             const response = await axios.post('http://localhost:8080/process', formData, {
+//                 responseType: 'blob', // Oczekujemy odpowiedzi w formacie pliku
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data',
+//                 },
+//             });
+//
+//             // Odbierz plik MXL z odpowiedzi
+//             const blob = new Blob([response.data], { type: 'application/vnd.recordare.musicxml+xml' });
+//             const downloadUrl = URL.createObjectURL(blob);
+//
+//             // Utwórz link do pobrania
+//             const a = document.createElement('a');
+//             a.href = downloadUrl;
+//             a.download = 'converted.mxl'; // Nazwa pobieranego pliku
+//             document.body.appendChild(a);
+//             a.click();
+//             a.remove();
+//
+//         } catch (error) {
+//             alert('Wystąpił problem podczas przesyłania pliku: ' + error.message);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+//
+//     return (
+//         <div style={containerStyle}>
+//             <h1>Prześlij plik PDF</h1>
+//             <input type="file" accept="application/pdf" onChange={handleFileChange} style={inputStyle} />
+//             <button onClick={handleUpload} disabled={loading} style={buttonStyle}>
+//                 {loading ? 'Przesyłanie...' : 'Prześlij'}
+//             </button>
+//         </div>
+//     );
+// }
+//
+// const containerStyle = {
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     gap: '20px',
+//     padding: '20px',
+//     border: '1px solid #ccc',
+//     borderRadius: '8px',
+//     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+//     width: '100%',
+//     maxWidth: '400px',
+//     margin: '0 auto',
+// };
+//
+// const inputStyle = {
+//     padding: '10px',
+//     border: '1px solid #ccc',
+//     borderRadius: '4px',
+//     fontSize: '16px',
+//     width: '100%',
+//     maxWidth: '300px',
+// };
+//
+// const buttonStyle = {
+//     padding: '10px 20px',
+//     border: 'none',
+//     borderRadius: '4px',
+//     backgroundColor: '#28a745',
+//     color: '#fff',
+//     fontSize: '16px',
+//     cursor: 'pointer',
+//     width: '100%',
+//     maxWidth: '150px',
+//     textAlign: 'center',
+//     transition: 'background-color 0.3s ease',
+//     outline: 'none',
+// };
+//
+// export default FileUpload;
