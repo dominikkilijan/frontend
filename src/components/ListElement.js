@@ -10,12 +10,12 @@ function ListElement({ file }) {
     return (
         <li style={fileItemStyle}>
             <span style={fileNameStyle}>{truncateName(file.name)}</span>
-            <span style={fileDateStyle}>{file.dateAdded}</span>
+            <span style={fileDateStyle}>{file.date}</span>
             <img
                 src={downloadIcon}
                 alt="Pobierz"
                 style={iconStyle}
-                onClick={() => handleDownload(file.file)}
+                onClick={() => handleDownload(file.url)}
             />
             <img
                 src={deleteIcon}
