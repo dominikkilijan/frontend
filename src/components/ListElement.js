@@ -2,44 +2,54 @@ import React from 'react';
 import deleteIcon from '../assets/delete.svg';
 import downloadIcon from '../assets/download.svg';
 
-function ListElement({ file }) {
+function ListElement({ file, onDelete }) {
     const truncateName = (name) => {
         return name.length > 25 ? `${name.slice(0, 25)}...` : name;
+    };
+
+    const formatDate = (dateString) => {
+        // Zastępuje 'T' spacją i ucina sekundy, jeśli istnieją
+        return dateString.replace('T', ' ').slice(0, 16);
+    };
+
+    const handleDownload = async (fileUrl, fileName) => {
+        try {
+            const response = await fetch(fileUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = fileName;
+            downloadLink.click();
+            URL.revokeObjectURL(downloadLink.href);
+        } catch (err) {
+            alert('Wystąpił błąd podczas pobierania pliku.');
+            console.error(err);
+        }
     };
 
     return (
         <li style={fileItemStyle}>
             <span style={fileNameStyle}>{truncateName(file.name)}</span>
-            <span style={fileDateStyle}>{file.date}</span>
+            <span style={fileDateStyle}>{formatDate(file.date)}</span>
             <img
                 src={downloadIcon}
                 alt="Pobierz"
                 style={iconStyle}
-                onClick={() => handleDownload(file.url)}
+                onClick={() => handleDownload(file.url, `${file.name}.mxl`)}
             />
             <img
                 src={deleteIcon}
                 alt="Usuń"
                 style={iconStyle}
-                onClick={() => handleDelete(file.name)}
+                onClick={() => onDelete(file.id)}
             />
         </li>
     );
 }
-
-const handleDownload = (filePath) => {
-    const link = document.createElement('a');
-    link.href = filePath;
-    link.download = filePath.split('/').pop();
-    link.click();
-};
-
-const handleDelete = (fileName) => {
-    const confirmed = window.confirm(`Czy na pewno chcesz usunąć plik "${fileName}"?`);
-    if (confirmed) {
-        console.log(`Plik "${fileName}" został usunięty`);
-    }
-};
 
 const fileItemStyle = {
     display: 'flex',

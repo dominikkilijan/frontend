@@ -35,6 +35,26 @@ function MyAccount() {
         fetchFiles();
     }, [userId]);
 
+    const handleDelete = async (fileId) => {
+        const confirmed = window.confirm('Czy na pewno chcesz usunąć ten plik?');
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/account/delete-file?fileId=${fileId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Aktualizuj stan plików
+            setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+        } catch (err) {
+            alert('Wystąpił błąd podczas usuwania pliku.');
+        }
+    };
+
     const handleNextPage = () => {
         if (currentPage < totalPages) {
             setCurrentPage((prevPage) => prevPage + 1);
@@ -64,7 +84,7 @@ function MyAccount() {
             <h2 style={headerStyle}>Moje nuty</h2>
             <ul style={fileListStyle}>
                 {currentFiles.map((file) => (
-                    <ListElement key={file.id} file={file} />
+                    <ListElement key={file.id} file={file} onDelete={handleDelete} />
                 ))}
             </ul>
             <div style={paginationStyle}>
