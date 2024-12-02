@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ListElement from './ListElement';
-import './MyAccount.css';
+import '../styles/MyAccount.css';
 
 function MyAccount() {
     const [files, setFiles] = useState([]);

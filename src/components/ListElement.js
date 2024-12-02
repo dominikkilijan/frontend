@@ -1,7 +1,7 @@
 import React from 'react';
 import deleteIcon from '../assets/delete.svg';
 import downloadIcon from '../assets/download.svg';
-import './ListElement.css';
+import '../styles/ListElement.css';
 
 function ListElement({ file, onFileDelete }) {
     const truncateName = (name) => {

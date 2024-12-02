@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import openEyeIcon from '../assets/open-eye.svg';
 import closedEyeIcon from '../assets/closed-eye.svg';
 import axios from "axios";
-import './Register.css';
+import '../styles/Register.css';
 
 function Register() {
     const [email, setEmail] = useState('');
