@@ -23,7 +23,6 @@ function Login() {
 
             const token = response.data;
 
-            // Zapisz token JWT w localStorage
             localStorage.setItem('jwt', token);
 
             alert('Zalogowano pomyślnie!');

@@ -13,14 +13,11 @@ function Header() {
     };
 
     const handleLogout = () => {
-        // Usuń token z localStorage
         localStorage.removeItem('jwt');
-        // Przekieruj na stronę logowania
         navigate('/login');
     };
 
-    const isLoggedIn = !!localStorage.getItem('jwt'); // Sprawdź, czy token JWT jest w localStorage
-
+    const isLoggedIn = !!localStorage.getItem('jwt');
     return (
         <header style={headerStyle}>
             <h1 onClick={handleHomeClick} style={homeStyle}>Praca inżynierska</h1>

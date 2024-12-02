@@ -13,7 +13,18 @@ function ListElement({ file, onDelete }) {
 
     const handleDownload = async (fileUrl, fileName) => {
         try {
-            const response = await fetch(fileUrl);
+            const token = localStorage.getItem('jwt');
+            if (!token) {
+                alert('Musisz być zalogowany, aby pobierać pliki.');
+                return;
+            }
+
+            const response = await fetch(fileUrl, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

@@ -21,20 +21,19 @@ function FileUpload() {
         formData.append('file', file);
 
         try {
-            const token = localStorage.getItem('jwt'); // Pobierz token JWT z localStorage, jeśli istnieje
+            const token = localStorage.getItem('jwt');
 
-            // Przygotowanie nagłówków
             const headers = {
                 'Content-Type': 'multipart/form-data',
             };
 
             if (token) {
-                headers.Authorization = `Bearer ${token}`; // Dodaj nagłówek Authorization tylko, jeśli token istnieje
+                headers.Authorization = `Bearer ${token}`;
             }
 
             const response = await axios.post('http://localhost:8080/process', formData, {
                 responseType: 'blob',
-                headers, // Przekazanie dynamicznych nagłówków
+                headers,
             });
 
             const contentDisposition = response.headers['content-disposition'];
