@@ -2,7 +2,7 @@ import React from 'react';
 import deleteIcon from '../assets/delete.svg';
 import downloadIcon from '../assets/download.svg';
 
-function ListElement({ file, onDelete }) {
+function ListElement({ file, onFileDelete }) {
     const truncateName = (name) => {
         return name.length > 25 ? `${name.slice(0, 25)}...` : name;
     };
@@ -41,6 +41,35 @@ function ListElement({ file, onDelete }) {
         }
     };
 
+    const handleDelete = async (fileId) => {
+        const confirmed = window.confirm('Czy na pewno chcesz usunąć ten plik?');
+        if (!confirmed) return;
+
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            alert('Musisz być zalogowany, aby usuwać pliki.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/account/delete-file?fileId=${fileId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            onFileDelete(fileId);
+        } catch (err) {
+            alert('Wystąpił błąd podczas usuwania pliku.');
+            console.error(err);
+        }
+    };
+
     return (
         <li style={fileItemStyle}>
             <span style={fileNameStyle}>{truncateName(file.name)}</span>
@@ -55,7 +84,7 @@ function ListElement({ file, onDelete }) {
                 src={deleteIcon}
                 alt="Usuń"
                 style={iconStyle}
-                onClick={() => onDelete(file.id)}
+                onClick={() => handleDelete(file.id)}
             />
         </li>
     );

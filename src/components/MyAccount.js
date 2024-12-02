@@ -46,35 +46,6 @@ function MyAccount() {
         fetchFiles();
     }, [navigate]);
 
-    const handleDelete = async (fileId) => {
-        const confirmed = window.confirm('Czy na pewno chcesz usunąć ten plik?');
-        if (!confirmed) return;
-
-        const token = localStorage.getItem('jwt');
-        if (!token) {
-            alert('Musisz być zalogowany, aby usuwać pliki.');
-            navigate('/login');
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:8080/account/delete-file?fileId=${fileId}`, {
-                method: 'DELETE',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
-        } catch (err) {
-            alert('Wystąpił błąd podczas usuwania pliku.');
-        }
-    };
-
     const handleNextPage = () => {
         if (currentPage < totalPages) {
             setCurrentPage((prevPage) => prevPage + 1);
@@ -104,7 +75,9 @@ function MyAccount() {
             <h2 style={headerStyle}>Moje nuty</h2>
             <ul style={fileListStyle}>
                 {currentFiles.map((file) => (
-                    <ListElement key={file.id} file={file} onDelete={handleDelete} />
+                    <ListElement key={file.id} file={file} onFileDelete={(fileId) =>
+                        setFiles((prevFiles) => prevFiles.filter((f) => f.id !== fileId))
+                    } />
                 ))}
             </ul>
             <div style={paginationStyle}>
