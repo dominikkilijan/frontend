@@ -5,19 +5,37 @@ function Header() {
     const navigate = useNavigate();
 
     const handleAccountClick = () => {
-        navigate('/login');
+        navigate('/account');
     };
 
     const handleHomeClick = () => {
         navigate('/');
     };
 
+    const handleLogout = () => {
+        // Usuń token z localStorage
+        localStorage.removeItem('jwt');
+        // Przekieruj na stronę logowania
+        navigate('/login');
+    };
+
+    const isLoggedIn = !!localStorage.getItem('jwt'); // Sprawdź, czy token JWT jest w localStorage
+
     return (
         <header style={headerStyle}>
             <h1 onClick={handleHomeClick} style={homeStyle}>Praca inżynierska</h1>
-            <button onClick={handleAccountClick} style={accountButtonStyle}>
-                Moje konto
-            </button>
+            <div style={buttonGroupStyle}>
+                {
+                    <button onClick={handleAccountClick} style={accountButtonStyle}>
+                        Moje konto
+                    </button>
+                }
+                {isLoggedIn && (
+                    <button onClick={handleLogout} style={accountButtonStyle}>
+                        Wyloguj się
+                    </button>
+                )}
+            </div>
         </header>
     );
 }
@@ -33,6 +51,11 @@ const headerStyle = {
 
 const homeStyle = {
     cursor: 'pointer',
+};
+
+const buttonGroupStyle = {
+    display: 'flex',
+    gap: '10px',
 };
 
 const accountButtonStyle = {

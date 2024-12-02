@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import openEyeIcon from '../assets/open-eye.svg';
 import closedEyeIcon from '../assets/closed-eye.svg';
+import axios from "axios";
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -13,15 +14,29 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
-        if (password === confirmPassword) {
-            console.log('Rejestracja:', email, password);
-            navigate('/login');
-        } else {
-            console.log('Hasła nie są identyczne');
+
+        if (password !== confirmPassword) {
+            alert('Hasła nie są identyczne!');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:8080/register', {
+                email: email,
+                password: password,
+            });
+
+            if (response.status === 201) {
+                alert('Rejestracja zakończona sukcesem!');
+                navigate('/login');
+            }
+        } catch (error) {
+            alert('Wystąpił błąd podczas rejestracji: ' + error.response?.data?.message || error.message);
         }
     };
+
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);

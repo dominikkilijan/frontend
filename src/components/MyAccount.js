@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ListElement from './ListElement';
 
 function MyAccount() {
-    const { userId } = useParams();
-
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const navigate = useNavigate();
     const filesPerPage = 10;
     const totalPages = Math.ceil(files.length / filesPerPage);
 
@@ -18,8 +17,20 @@ function MyAccount() {
 
     useEffect(() => {
         const fetchFiles = async () => {
+            const token = localStorage.getItem('jwt');
+            if (!token) {
+                alert('Musisz być zalogowany, aby zobaczyć swoje pliki.');
+                navigate('/login');
+                return;
+            }
+
             try {
-                const response = await fetch(`http://localhost:8080/account?userId=${userId}`);
+                const response = await fetch('http://localhost:8080/account', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -33,22 +44,31 @@ function MyAccount() {
         };
 
         fetchFiles();
-    }, [userId]);
+    }, [navigate]);
 
     const handleDelete = async (fileId) => {
         const confirmed = window.confirm('Czy na pewno chcesz usunąć ten plik?');
         if (!confirmed) return;
 
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            alert('Musisz być zalogowany, aby usuwać pliki.');
+            navigate('/login');
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:8080/account/delete-file?fileId=${fileId}`, {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // Aktualizuj stan plików
             setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
         } catch (err) {
             alert('Wystąpił błąd podczas usuwania pliku.');

@@ -8,7 +8,6 @@ function ListElement({ file, onDelete }) {
     };
 
     const formatDate = (dateString) => {
-        // Zastępuje 'T' spacją i ucina sekundy, jeśli istnieją
         return dateString.replace('T', ' ').slice(0, 16);
     };
 

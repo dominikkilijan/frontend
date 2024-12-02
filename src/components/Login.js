@@ -1,18 +1,40 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import openEyeIcon from '../assets/open-eye.svg';
 import closedEyeIcon from '../assets/closed-eye.svg';
 
 function Login() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log('Logowanie:', username, password);
-        navigate('/account');
+
+        try {
+            const response = await axios.post('http://localhost:8080/auth/login', null, {
+                params: {
+                    email: email,
+                    password: password,
+                },
+            });
+
+            const token = response.data;
+
+            // Zapisz token JWT w localStorage
+            localStorage.setItem('jwt', token);
+
+            alert('Zalogowano pomyślnie!');
+            navigate('/account');
+        } catch (error) {
+            if (error.response?.status === 401) {
+                alert('Nieprawidłowe dane logowania.');
+            } else {
+                alert('Wystąpił błąd podczas logowania: ' + error.message);
+            }
+        }
     };
 
     const togglePasswordVisibility = () => {
@@ -28,10 +50,10 @@ function Login() {
             <h2>Zaloguj się</h2>
             <form onSubmit={handleLogin} style={formStyle}>
                 <input
-                    type="text"
-                    placeholder="Nazwa użytkownika"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    type="email"
+                    placeholder="Adres email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     style={inputStyle}
                     required
                 />

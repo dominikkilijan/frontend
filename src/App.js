@@ -15,7 +15,7 @@ function App() {
                     <Route path="/" element={<FileUpload />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/account/:userId" element={<MyAccount />} />
+                    <Route path="/account" element={<MyAccount />} />
                 </Routes>
             </main>
         </Router>
