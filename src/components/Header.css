@@ -1,0 +1,33 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #66bb6a;
+    color: #fff;
+}
+
+.home {
+    cursor: pointer;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap; /* Zapobiega zawijaniu tekstu */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button:hover {
+    background-color: transparent;
+    color: #fff;
+}

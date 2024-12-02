@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import openEyeIcon from '../assets/open-eye.svg';
 import closedEyeIcon from '../assets/closed-eye.svg';
 import axios from "axios";
+import './Register.css';
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -56,123 +57,56 @@ function Register() {
     };
 
     return (
-        <div style={registerContainerStyle}>
+        <div className="register-container">
             <h2>Zarejestruj się</h2>
-            <form onSubmit={handleRegister} style={formStyle}>
+            <form onSubmit={handleRegister} className="register-form">
                 <input
                     type="email"
                     placeholder="Adres email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    style={inputStyle}
+                    className="register-input"
                     required
                 />
-                <div style={passwordContainerStyle}>
+                <div className="password-container">
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Hasło"
                         value={password}
                         onChange={handlePasswordChange}
-                        style={inputStyle}
+                        className="register-input"
                         required
                     />
                     <img
                         src={showPassword ? openEyeIcon : closedEyeIcon}
                         alt={showPassword ? "Ukryj hasło" : "Pokaż hasło"}
                         onClick={togglePasswordVisibility}
-                        style={eyeIconStyle}
+                        className="eye-icon"
                     />
                 </div>
-                <div style={passwordContainerStyle}>
+                <div className="password-container">
                     <input
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Powtórz hasło"
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
-                        style={{ ...inputStyle, borderColor: passwordMatch ? '#ccc' : 'red' }}
+                        className={`register-input ${passwordMatch ? '' : 'input-error'}`}
                         required
                     />
                     <img
                         src={showConfirmPassword ? openEyeIcon : closedEyeIcon}
                         alt={showConfirmPassword ? "Ukryj hasło" : "Pokaż hasło"}
                         onClick={toggleConfirmPasswordVisibility}
-                        style={eyeIconStyle}
+                        className="eye-icon"
                     />
                 </div>
                 {!passwordMatch && (
-                    <p style={errorTextStyle}>Hasła nie są identyczne</p>
+                    <p className="error-text">Hasła nie są identyczne</p>
                 )}
-                <button type="submit" style={buttonStyle}>Zarejestruj się</button>
+                <button type="submit" className="register-button">Zarejestruj się</button>
             </form>
         </div>
     );
 }
-
-const registerContainerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '80vh',
-    backgroundColor: '#e0f2f1',
-    padding: '20px',
-    borderRadius: '10px',
-    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)',
-    width: '100%',
-    maxWidth: '400px',
-    marginTop: '40px',
-};
-
-const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '400px',
-};
-
-const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    margin: '10px 0',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    fontSize: '16px',
-    boxSizing: 'border-box',
-};
-
-const passwordContainerStyle = {
-    position: 'relative',
-    width: '100%',
-};
-
-const eyeIconStyle = {
-    position: 'absolute',
-    right: '10px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    cursor: 'pointer',
-    width: '20px',
-    height: '20px',
-};
-
-const buttonStyle = {
-    width: '100%',
-    padding: '10px',
-    backgroundColor: '#66bb6a',
-    color: '#fff',
-    borderRadius: '5px',
-    border: 'none',
-    fontSize: '16px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    transition: 'background-color 0.3s',
-};
-
-const errorTextStyle = {
-    color: 'red',
-    fontSize: '14px',
-    margin: '5px 0',
-};
 
 export default Register;

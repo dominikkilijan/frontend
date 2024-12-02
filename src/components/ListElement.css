@@ -1,0 +1,26 @@
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.file-name {
+    flex: 1;
+    text-align: left;
+}
+
+.file-date {
+    flex: 1;
+    text-align: center;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
+}

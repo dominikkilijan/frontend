@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Header.css';
 
 function Header() {
     const navigate = useNavigate();
@@ -18,17 +19,16 @@ function Header() {
     };
 
     const isLoggedIn = !!localStorage.getItem('jwt');
+
     return (
-        <header style={headerStyle}>
-            <h1 onClick={handleHomeClick} style={homeStyle}>Praca inżynierska</h1>
-            <div style={buttonGroupStyle}>
-                {
-                    <button onClick={handleAccountClick} style={accountButtonStyle}>
-                        Moje konto
-                    </button>
-                }
+        <header className="header">
+            <h1 onClick={handleHomeClick} className="home">Praca inżynierska</h1>
+            <div className="button-group">
+                <button onClick={handleAccountClick} className="button">
+                    Moje konto
+                </button>
                 {isLoggedIn && (
-                    <button onClick={handleLogout} style={accountButtonStyle}>
+                    <button onClick={handleLogout} className="button">
                         Wyloguj się
                     </button>
                 )}
@@ -36,32 +36,5 @@ function Header() {
         </header>
     );
 }
-
-const headerStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 20px',
-    backgroundColor: '#66bb6a',
-    color: '#fff',
-};
-
-const homeStyle = {
-    cursor: 'pointer',
-};
-
-const buttonGroupStyle = {
-    display: 'flex',
-    gap: '10px',
-};
-
-const accountButtonStyle = {
-    backgroundColor: 'transparent',
-    color: '#fff',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '16px',
-    fontWeight: 'bold',
-};
 
 export default Header;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ListElement from './ListElement';
+import './MyAccount.css';
 
 function MyAccount() {
     const [files, setFiles] = useState([]);
@@ -71,30 +72,30 @@ function MyAccount() {
     }
 
     return (
-        <div style={accountContainerStyle}>
-            <h2 style={headerStyle}>Moje nuty</h2>
-            <ul style={fileListStyle}>
+        <div className="account-container">
+            <h2 className="account-header">Moje nuty</h2>
+            <ul className="file-list">
                 {currentFiles.map((file) => (
                     <ListElement key={file.id} file={file} onFileDelete={(fileId) =>
                         setFiles((prevFiles) => prevFiles.filter((f) => f.id !== fileId))
                     } />
                 ))}
             </ul>
-            <div style={paginationStyle}>
+            <div className="pagination">
                 <button
                     onClick={handlePreviousPage}
                     disabled={currentPage === 1}
-                    style={paginationButtonStyle}
+                    className="pagination-button"
                 >
                     Poprzednia
                 </button>
-                <span style={pageIndicatorStyle}>
+                <span className="page-indicator">
                     Strona {currentPage} z {totalPages}
                 </span>
                 <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
-                    style={paginationButtonStyle}
+                    className="pagination-button"
                 >
                     Następna
                 </button>
@@ -102,65 +103,5 @@ function MyAccount() {
         </div>
     );
 }
-
-const accountContainerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    minHeight: '80vh',
-    backgroundColor: '#e0f2f1',
-    padding: '20px',
-    borderRadius: '10px',
-    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)',
-    width: '100%',
-    maxWidth: '600px',
-    marginTop: '40px',
-    position: 'relative',
-};
-
-const headerStyle = {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    textAlign: 'center',
-    width: '100%',
-};
-
-const fileListStyle = {
-    listStyleType: 'none',
-    padding: 0,
-    width: '100%',
-    maxWidth: '500px',
-};
-
-const paginationStyle = {
-    position: 'absolute',
-    bottom: '10%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '500px',
-};
-
-const paginationButtonStyle = {
-    padding: '8px 16px',
-    backgroundColor: '#66bb6a',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    transition: 'background-color 0.3s',
-};
-
-const pageIndicatorStyle = {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    color: '#555',
-};
 
 export default MyAccount;

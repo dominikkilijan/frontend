@@ -1,6 +1,7 @@
 import React from 'react';
 import deleteIcon from '../assets/delete.svg';
 import downloadIcon from '../assets/download.svg';
+import './ListElement.css';
 
 function ListElement({ file, onFileDelete }) {
     const truncateName = (name) => {
@@ -71,50 +72,23 @@ function ListElement({ file, onFileDelete }) {
     };
 
     return (
-        <li style={fileItemStyle}>
-            <span style={fileNameStyle}>{truncateName(file.name)}</span>
-            <span style={fileDateStyle}>{formatDate(file.date)}</span>
+        <li className="file-item">
+            <span className="file-name">{truncateName(file.name)}</span>
+            <span className="file-date">{formatDate(file.date)}</span>
             <img
                 src={downloadIcon}
                 alt="Pobierz"
-                style={iconStyle}
+                className="icon"
                 onClick={() => handleDownload(file.url, `${file.name}.mxl`)}
             />
             <img
                 src={deleteIcon}
                 alt="Usuń"
-                style={iconStyle}
+                className="icon"
                 onClick={() => handleDelete(file.id)}
             />
         </li>
     );
 }
-
-const fileItemStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px',
-    borderBottom: '1px solid #ccc',
-    fontSize: '16px',
-};
-
-const fileNameStyle = {
-    flex: 1,
-    textAlign: 'left',
-};
-
-const fileDateStyle = {
-    flex: 1,
-    textAlign: 'center',
-};
-
-const iconStyle = {
-    width: '24px',
-    height: '24px',
-    cursor: 'pointer',
-    paddingLeft: '5px',
-    paddingRight: '5px',
-};
 
 export default ListElement;
