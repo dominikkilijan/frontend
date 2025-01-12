@@ -72,3 +72,23 @@
     font-size: 14px;
     margin: 5px 0;
 }
+
+@media (max-width: 768px) {
+    .register-container {
+        min-height: 70vh;
+        margin-top: 20px;
+    }
+
+    .register-form {
+        max-width: 90%;
+    }
+
+    .register-input {
+        font-size: 14px;
+    }
+
+    .register-button {
+        font-size: 14px;
+        padding: 8px;
+    }
+}

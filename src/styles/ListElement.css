@@ -8,12 +8,15 @@
 }
 
 .file-name {
-    flex: 1;
+    flex: 0.8;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .file-date {
-    flex: 1;
+    flex: 1.2;
     text-align: center;
 }
 

@@ -1,13 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/FileUpload.css';
 
 function FileUpload() {
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkIfMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkIfMobile();
+        window.addEventListener('resize', checkIfMobile);
+
+        return () => window.removeEventListener('resize', checkIfMobile);
+    }, []);
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
+    };
+
+    const handleDragOver = (event) => {
+        event.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleDrop = (event) => {
+        event.preventDefault();
+        setIsDragging(false);
+
+        const droppedFile = event.dataTransfer.files[0];
+
+        if (droppedFile) {
+            if (droppedFile.type !== 'application/pdf') {
+                alert('Można przesyłać tylko pliki PDF.');
+                return;
+            }
+            setFile(droppedFile);
+        }
     };
 
     const handleUpload = async () => {
@@ -67,7 +104,26 @@ function FileUpload() {
     return (
         <div className="container">
             <h1>Prześlij plik PDF</h1>
-            <input type="file" accept="application/pdf" onChange={handleFileChange} className="input" />
+            <div
+                className={`dropzone ${isDragging ? 'dragging' : ''}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+            >
+                {file ? (
+                    <p>{file.name}</p>
+                ) : isMobile ? (
+                    <p>Kliknij, aby wybrać plik PDF.</p>
+                ) : (
+                    <p>Przeciągnij i upuść plik PDF tutaj lub kliknij, aby wybrać.</p>
+                )}
+                <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                    className="file-input"
+                />
+            </div>
             <button onClick={handleUpload} disabled={loading} className="button">
                 {loading ? 'Przesyłanie...' : 'Prześlij'}
             </button>

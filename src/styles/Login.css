@@ -71,3 +71,28 @@
     text-decoration: underline;
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    .login-container {
+        min-height: 70vh;
+        margin-top: 20px;
+    }
+
+    .login-form {
+        max-width: 90%;
+    }
+
+    .login-input {
+        font-size: 14px;
+    }
+
+    .login-button {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .register-text {
+        font-size: 12px;
+    }
+}
+

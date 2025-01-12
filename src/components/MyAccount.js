@@ -8,11 +8,24 @@ function MyAccount() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [filesPerPage, setFilesPerPage] = useState(10);
 
     const navigate = useNavigate();
-    const filesPerPage = 10;
-    const totalPages = Math.ceil(files.length / filesPerPage);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setFilesPerPage(window.innerWidth <= 768 ? 5 : 10);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    const totalPages = Math.ceil(files.length / filesPerPage);
     const startIndex = (currentPage - 1) * filesPerPage;
     const currentFiles = files.slice(startIndex, startIndex + filesPerPage);
 
@@ -76,9 +89,15 @@ function MyAccount() {
             <h2 className="account-header">Moje nuty</h2>
             <ul className="file-list">
                 {currentFiles.map((file) => (
-                    <ListElement key={file.id} file={file} onFileDelete={(fileId) =>
-                        setFiles((prevFiles) => prevFiles.filter((f) => f.id !== fileId))
-                    } />
+                    <ListElement
+                        key={file.id}
+                        file={file}
+                        onFileDelete={(fileId) =>
+                            setFiles((prevFiles) =>
+                                prevFiles.filter((f) => f.id !== fileId)
+                            )
+                        }
+                    />
                 ))}
             </ul>
             <div className="pagination">
